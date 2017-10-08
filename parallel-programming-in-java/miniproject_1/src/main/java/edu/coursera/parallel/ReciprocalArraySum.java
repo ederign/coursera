@@ -188,53 +188,6 @@ public final class ReciprocalArraySum {
                     value += task.getValue();
                 }
 
-
-
-
-//                int start1 = getChunkStartInclusive(0,
-//                                                    3,
-//                                                    numElements) + startIndexInclusive;
-//                int end1 = getChunkEndExclusive(0,
-//                                                3,
-//                                                numElements) + startIndexInclusive;
-//                int start2 = getChunkStartInclusive(1,
-//                                                    3,
-//                                                    numElements) + startIndexInclusive;
-//                int end2 = getChunkEndExclusive(1,
-//                                                3,
-//                                                numElements) + startIndexInclusive;
-//
-//                int start3 = getChunkStartInclusive(2,
-//                                                    3,
-//                                                    numElements) + startIndexInclusive;
-//                int end3 = getChunkEndExclusive(2,
-//                                                3,
-//                                                numElements) + startIndexInclusive;
-//
-//                ReciprocalArraySumTask t1 = new ReciprocalArraySumTask(start1,
-//                                                                       end1,
-//                                                                       input,
-//                                                                       numTasks,
-//                                                                       end1 - start1);
-//
-//                ReciprocalArraySumTask t2 = new ReciprocalArraySumTask(start2,
-//                                                                       end2,
-//                                                                       input,
-//                                                                       numTasks,
-//                                                                       end2 - start2);
-//                ReciprocalArraySumTask t3 = new ReciprocalArraySumTask(start3,
-//                                                                       end3,
-//                                                                       input,
-//                                                                       numTasks,
-//                                                                       end3 - start3);
-
-
-//                t1.fork(); //async
-//                t2.fork();
-//                t3.compute();
-//                t1.join();
-//                t2.join();
-//                value = t1.getValue() + t2.getValue() + t3.getValue();
             }
         }
     }
