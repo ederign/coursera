@@ -25,15 +25,16 @@ public final class SieveActor extends Sieve {
 
         PCDP.finish(() -> {
             for (int i = 3; i <= limit; i += 2) {
-                s.process(i);
+                s.send(i);
             }
+            s.send(0);
         });
 
         int total = 0;
         SieveActorActor currentActor = s;
         while (currentActor != null) {
-            total += currentActor.actorLocalNumberOfPrimes;
-            currentActor = currentActor.next;
+            total += currentActor.numLocalPrimes;
+            currentActor = currentActor.nextActor;
         }
 
         return total;
@@ -45,13 +46,13 @@ public final class SieveActor extends Sieve {
      */
     public static final class SieveActorActor extends Actor {
 
-        private static final int MAX_LOCAL_PRIMES = 10_000;
+        private static final int MAX_LOCAL_PRIMES = 1000;
         private final int localPrimes[];
-        private int actorLocalNumberOfPrimes;
-        private SieveActorActor next;
+        private int numLocalPrimes;
+        private SieveActorActor nextActor;
 
         public SieveActorActor(int localPrime) {
-            this.actorLocalNumberOfPrimes = 1;
+            this.numLocalPrimes = 1;
             this.localPrimes = new int[MAX_LOCAL_PRIMES];
             this.localPrimes[0] = localPrime;
         }
@@ -64,22 +65,28 @@ public final class SieveActor extends Sieve {
         @Override
         public void process(final Object msg) {
             final int candidate = (Integer) msg;
-            if (isLocalPrime(candidate)) {
-                if (actorLocalNumberOfPrimes < MAX_LOCAL_PRIMES) {
-                    localPrimes[actorLocalNumberOfPrimes] = candidate;
-                    actorLocalNumberOfPrimes++;
-                } else if (next == null) {
-                    next = new SieveActorActor(candidate);
-                } else {
-                    next.send(candidate);
+
+            if (candidate <= 0) {
+                if (nextActor != null) {
+                    nextActor.send(msg);
+                }
+            } else {
+                if (isPrime(candidate)) {
+                    if (numLocalPrimes < MAX_LOCAL_PRIMES) {
+                        localPrimes[numLocalPrimes] = candidate;
+                        numLocalPrimes++;
+                    } else if (nextActor == null) {
+                        nextActor = new SieveActorActor(candidate);
+                    } else {
+                        nextActor.send(candidate);
+                    }
                 }
             }
         }
 
-        private boolean isLocalPrime(int candidate) {
-            for (int i = 0; i < actorLocalNumberOfPrimes; i++) {
-                int currentLocalPrime = localPrimes[i];
-                if (candidate % currentLocalPrime == 0) {
+        private boolean isPrime(final int candidate) {
+            for (int i = 0; i < numLocalPrimes; i++) {
+                if (candidate % localPrimes[i] == 0) {
                     return false;
                 }
             }
